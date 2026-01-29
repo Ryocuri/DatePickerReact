@@ -23,19 +23,19 @@ yarn add DatePickerReact
 ### Basic Usage
 
 ```jsx
-import { DatePicker } from 'DatePickerReact'
+import {DatePicker} from 'dist/DatePickerReact.es'
 import 'DatePickerReact/dist/style.css'
 
 function App() {
-  const [date, setDate] = useState('')
+    const [date, setDate] = useState('')
 
-  return (
-    <DatePicker
-      value={date}
-      onChange={setDate}
-      placeholder="Select a date"
-    />
-  )
+    return (
+        <DatePicker
+            value={date}
+            onChange={setDate}
+            placeholder="Select a date"
+        />
+    )
 }
 ```
 

@@ -99,7 +99,7 @@ npm install username/DatePickerReact
 #### 4. Utiliser
 
 ```jsx
-import { DatePicker } from 'DatePickerReact'
+import {DatePicker} from 'dist/DatePickerReact.es'
 import 'DatePickerReact/dist/style.css'
 ```
 

@@ -10,7 +10,7 @@
       "import": "./dist/DatePickerReact.es.js",
       "require": "./dist/DatePickerReact.umd.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./dist/style.css": "./dist/DatePickerReact.css"
   },
   "files": [
     "dist"
