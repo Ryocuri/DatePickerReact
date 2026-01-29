@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'lib/index.js'),
-      name: 'ReactDatePickerPlugin',
-      fileName: (format) => `react-datepicker-plugin.${format}.js`
+      name: 'DatePickerReact',
+      fileName: (format) => `DatePickerReact.${format}.js`
     },
     rollupOptions: {
       // Make sure to externalize deps that shouldn't be bundled into your library

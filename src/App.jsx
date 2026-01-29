@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import DatePicker from '../lib/DatePicker'
+import DatePicker from '../lib/DatePicker.jsx'
 import '../lib/DatePicker.css'
 import './App.css'
 

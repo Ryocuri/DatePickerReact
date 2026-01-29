@@ -11,17 +11,17 @@
 #### 1. Finaliser le package.json
 
 ```bash
-cd react-datepicker-plugin
+cd DatePickerReact
 ```
 
 Mettre à jour `package.json`:
 ```json
 {
-  "name": "@votre-username/react-datepicker-plugin",
+  "name": "@votre-username/DatePickerReact",
   "author": "Votre Nom",
   "repository": {
     "type": "git",
-    "url": "https://github.com/votre-username/react-datepicker-plugin"
+    "url": "https://github.com/votre-username/DatePickerReact"
   }
 }
 ```
@@ -33,8 +33,8 @@ npm run build
 ```
 
 Génère `dist/` avec:
-- `react-datepicker-plugin.es.js`
-- `react-datepicker-plugin.umd.js`
+- `DatePickerReact.es.js`
+- `DatePickerReact.umd.js`
 - `style.css`
 
 #### 3. Se connecter à npm
@@ -53,12 +53,12 @@ npm publish --access public
 
 ```bash
 cd ../hrnet-react
-npm install @votre-username/react-datepicker-plugin
+npm install @votre-username/DatePickerReact
 ```
 
 ```jsx
-import { DatePicker } from '@votre-username/react-datepicker-plugin'
-import '@votre-username/react-datepicker-plugin/dist/style.css'
+import { DatePicker } from '@votre-username/DatePickerReact'
+import '@votre-username/DatePickerReact/dist/style.css'
 ```
 
 ---
@@ -70,11 +70,11 @@ import '@votre-username/react-datepicker-plugin/dist/style.css'
 #### 1. Créer un repo GitHub
 
 ```bash
-cd react-datepicker-plugin
+cd DatePickerReact
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/username/react-datepicker-plugin.git
+git remote add origin https://github.com/username/DatePickerReact.git
 git push -u origin main
 ```
 
@@ -93,14 +93,14 @@ git push
 
 ```bash
 cd ../hrnet-react
-npm install username/react-datepicker-plugin
+npm install username/DatePickerReact
 ```
 
 #### 4. Utiliser
 
 ```jsx
-import { DatePicker } from 'react-datepicker-plugin'
-import 'react-datepicker-plugin/dist/style.css'
+import { DatePicker } from 'DatePickerReact'
+import 'DatePickerReact/dist/style.css'
 ```
 
 ---
@@ -111,7 +111,7 @@ import 'react-datepicker-plugin/dist/style.css'
 
 ```bash
 cd ..
-rm -rf react-datepicker-plugin
+rm -rf DatePickerReact
 ```
 
 ---

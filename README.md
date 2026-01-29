@@ -9,13 +9,13 @@ This component provides a simple and accessible date picker for React applicatio
 ## Installation
 
 ```bash
-npm install react-datepicker-plugin
+npm install DatePickerReact
 ```
 
 Or with yarn:
 
 ```bash
-yarn add react-datepicker-plugin
+yarn add DatePickerReact
 ```
 
 ## Usage
@@ -23,8 +23,8 @@ yarn add react-datepicker-plugin
 ### Basic Usage
 
 ```jsx
-import { DatePicker } from 'react-datepicker-plugin'
-import 'react-datepicker-plugin/dist/style.css'
+import { DatePicker } from 'DatePickerReact'
+import 'DatePickerReact/dist/style.css'
 
 function App() {
   const [date, setDate] = useState('')

@@ -257,11 +257,11 @@ Le plugin React DatePicker est **prêt pour l'intégration** et peut servir de r
 
 ```jsx
 // Installation
-npm install react-datepicker-plugin
+npm install DatePickerReact
 
 // Import
-import { DatePicker } from 'react-datepicker-plugin';
-import 'react-datepicker-plugin/dist/style.css';
+import { DatePicker } from 'DatePickerReact';
+import 'DatePickerReact/dist/style.css';
 
 // Usage
 <DatePicker
