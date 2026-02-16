@@ -67,9 +67,25 @@ function DatePicker({
 }) {
   // Component State Management
   const [isOpen, setIsOpen] = useState(false)  // Controls calendar visibility
-  const [currentMonth, setCurrentMonth] = useState(new Date())  // Month displayed in calendar
   const [inputValue, setInputValue] = useState(value)  // Current input field value
   const containerRef = useRef(null)  // Reference to container for click-outside detection
+
+  // Initialize currentMonth based on value prop or current date
+  const getInitialMonth = () => {
+    if (value) {
+      const parts = value.split('-')
+      if (parts.length === 3) {
+        const date = new Date(parts[0], parts[1] - 1, parts[2])
+        if (!isNaN(date.getTime())) {
+          return new Date(date.getFullYear(), date.getMonth(), 1)
+        }
+      }
+    }
+    const today = new Date()
+    return new Date(today.getFullYear(), today.getMonth(), 1)
+  }
+  
+  const [currentMonth, setCurrentMonth] = useState(getInitialMonth)  // Month displayed in calendar
 
   // Localization Constants
   // Days of the week (Sunday to Saturday)
@@ -128,9 +144,9 @@ function DatePicker({
 
   /**
    * Generates an array of days for the calendar grid
-   * Includes null values for empty cells before the first day of the month
+   * Includes days from previous/next months for a complete 6-week grid
    * @param {Date} date - The month to generate days for
-   * @returns {Array<Date|null>} Array of Date objects and null values
+   * @returns {Array<{date: Date, isCurrentMonth: boolean}>} Array of day objects
    */
   const getDaysInMonth = (date) => {
     const year = date.getFullYear()
@@ -142,18 +158,65 @@ function DatePicker({
     
     const days = []
     
-    // Add empty cells for days before the first day of the month
-    // This aligns the calendar grid properly (e.g., if month starts on Wednesday, add 3 empty cells)
-    for (let i = 0; i < startingDay; i++) {
-      days.push(null)
+    // Add days from previous month
+    const prevMonth = new Date(year, month, 0)  // Last day of previous month
+    const prevMonthDays = prevMonth.getDate()
+    for (let i = startingDay - 1; i >= 0; i--) {
+      days.push({
+        date: new Date(year, month - 1, prevMonthDays - i),
+        isCurrentMonth: false
+      })
     }
     
     // Add all days of the current month
     for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(year, month, i))
+      days.push({
+        date: new Date(year, month, i),
+        isCurrentMonth: true
+      })
+    }
+    
+    // Add days from next month to complete the grid (6 rows = 42 cells)
+    const remainingDays = 42 - days.length
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({
+        date: new Date(year, month + 1, i),
+        isCurrentMonth: false
+      })
     }
     
     return days
+  }
+
+  /**
+   * Generates array of years for year selector
+   * @returns {Array<number>} Array of years (100 years range)
+   */
+  const getYearOptions = () => {
+    const currentYear = new Date().getFullYear()
+    const years = []
+    for (let i = currentYear - 50; i <= currentYear + 50; i++) {
+      years.push(i)
+    }
+    return years
+  }
+
+  /**
+   * Handles month selection change
+   * @param {Event} e - The select change event
+   */
+  const handleMonthChange = (e) => {
+    const newMonth = parseInt(e.target.value, 10)
+    setCurrentMonth(new Date(currentMonth.getFullYear(), newMonth, 1))
+  }
+
+  /**
+   * Handles year selection change
+   * @param {Event} e - The select change event
+   */
+  const handleYearChange = (e) => {
+    const newYear = parseInt(e.target.value, 10)
+    setCurrentMonth(new Date(newYear, currentMonth.getMonth(), 1))
   }
 
   /**
@@ -179,6 +242,9 @@ function DatePicker({
     if (!selected) return false
     return date.toDateString() === selected.toDateString()
   }
+
+  // Generate year options for the selector
+  const yearOptions = getYearOptions()
 
   /**
    * Checks if a date is today's date
@@ -311,9 +377,32 @@ function DatePicker({
             >
               ◀
             </button>
-            <span className="datepicker-month-year">
-              {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-            </span>
+            <div className="datepicker-selectors">
+              <select
+                className="datepicker-month-select"
+                value={currentMonth.getMonth()}
+                onChange={handleMonthChange}
+                aria-label="Select month"
+              >
+                {months.map((month, index) => (
+                  <option key={month} value={index}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="datepicker-year-select"
+                value={currentMonth.getFullYear()}
+                onChange={handleYearChange}
+                aria-label="Select year"
+              >
+                {yearOptions.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               type="button"
               className="datepicker-nav-btn"
@@ -333,24 +422,24 @@ function DatePicker({
           </div>
 
           <div className="datepicker-days">
-            {days.map((date, index) => (
+            {days.map((dayObj, index) => (
               <button
                 key={index}
                 type="button"
                 className={`datepicker-day ${
-                  !date ? 'datepicker-day-empty' : ''
+                  !dayObj.isCurrentMonth ? 'datepicker-day-other-month' : ''
                 } ${
-                  date && isSelected(date) ? 'datepicker-day-selected' : ''
+                  isSelected(dayObj.date) ? 'datepicker-day-selected' : ''
                 } ${
-                  date && isToday(date) ? 'datepicker-day-today' : ''
+                  isToday(dayObj.date) ? 'datepicker-day-today' : ''
                 } ${
-                  date && !isDateInRange(date) ? 'datepicker-day-disabled' : ''
+                  !isDateInRange(dayObj.date) ? 'datepicker-day-disabled' : ''
                 }`}
-                onClick={() => handleDateSelect(date)}
-                disabled={!date || !isDateInRange(date)}
-                aria-label={date ? date.toDateString() : undefined}
+                onClick={() => handleDateSelect(dayObj.date)}
+                disabled={!isDateInRange(dayObj.date)}
+                aria-label={dayObj.date.toDateString()}
               >
-                {date ? date.getDate() : ''}
+                {dayObj.date.getDate()}
               </button>
             ))}
           </div>
