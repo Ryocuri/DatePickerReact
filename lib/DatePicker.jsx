@@ -423,13 +423,13 @@ function DatePicker({
       return
     }
     
-    // Allow separator character
-    const separator = formatConfig.separator
-    if (e.key === separator) {
+    // Allow separator characters (both / and - to support all formats)
+    // Also check for Divide key (numpad /)
+    if (e.key === '/' || e.key === '-' || e.key === 'Divide') {
       return
     }
     
-    // Only allow digits
+    // Only allow digits (including numpad digits)
     if (!/^\d$/.test(e.key)) {
       e.preventDefault()
     }

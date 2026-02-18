@@ -5,7 +5,7 @@ function de() {
   if (ae) return V;
   ae = 1;
   var i = /* @__PURE__ */ Symbol.for("react.transitional.element"), d = /* @__PURE__ */ Symbol.for("react.fragment");
-  function D(y, f, u) {
+  function b(y, f, u) {
     var g = null;
     if (u !== void 0 && (g = "" + u), f.key !== void 0 && (g = "" + f.key), "key" in f) {
       u = {};
@@ -20,7 +20,7 @@ function de() {
       props: u
     };
   }
-  return V.Fragment = d, V.jsx = D, V.jsxs = D, V;
+  return V.Fragment = d, V.jsx = b, V.jsxs = b, V;
 }
 var L = {};
 var ne;
@@ -34,7 +34,7 @@ function fe() {
       switch (e) {
         case w:
           return "Fragment";
-        case E:
+        case v:
           return "Profiler";
         case x:
           return "StrictMode";
@@ -72,7 +72,7 @@ function fe() {
     function d(e) {
       return "" + e;
     }
-    function D(e) {
+    function b(e) {
       try {
         d(e);
         var a = !1;
@@ -196,7 +196,7 @@ React keys must be passed directly to JSX without using spread:
           r
         ), X[r + l] = !0);
       }
-      if (r = null, o !== void 0 && (D(o), r = "" + o), g(a) && (D(a.key), r = "" + a.key), "key" in a) {
+      if (r = null, o !== void 0 && (b(o), r = "" + o), g(a) && (b(a.key), r = "" + a.key), "key" in a) {
         o = {};
         for (var c in a)
           c !== "key" && (o[c] = a[c]);
@@ -214,12 +214,12 @@ React keys must be passed directly to JSX without using spread:
       );
     }
     function W(e) {
-      v(e) ? e._store && (e._store.validated = 1) : typeof e == "object" && e !== null && e.$$typeof === O && (e._payload.status === "fulfilled" ? v(e._payload.value) && e._payload.value._store && (e._payload.value._store.validated = 1) : e._store && (e._store.validated = 1));
+      D(e) ? e._store && (e._store.validated = 1) : typeof e == "object" && e !== null && e.$$typeof === O && (e._payload.status === "fulfilled" ? D(e._payload.value) && e._payload.value._store && (e._payload.value._store.validated = 1) : e._store && (e._store.validated = 1));
     }
-    function v(e) {
+    function D(e) {
       return typeof e == "object" && e !== null && e.$$typeof === Y;
     }
-    var _ = ie, Y = /* @__PURE__ */ Symbol.for("react.transitional.element"), J = /* @__PURE__ */ Symbol.for("react.portal"), w = /* @__PURE__ */ Symbol.for("react.fragment"), x = /* @__PURE__ */ Symbol.for("react.strict_mode"), E = /* @__PURE__ */ Symbol.for("react.profiler"), j = /* @__PURE__ */ Symbol.for("react.consumer"), S = /* @__PURE__ */ Symbol.for("react.context"), A = /* @__PURE__ */ Symbol.for("react.forward_ref"), H = /* @__PURE__ */ Symbol.for("react.suspense"), p = /* @__PURE__ */ Symbol.for("react.suspense_list"), R = /* @__PURE__ */ Symbol.for("react.memo"), O = /* @__PURE__ */ Symbol.for("react.lazy"), Z = /* @__PURE__ */ Symbol.for("react.activity"), Q = /* @__PURE__ */ Symbol.for("react.client.reference"), P = _.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, U = Object.prototype.hasOwnProperty, ee = Array.isArray, b = console.createTask ? console.createTask : function() {
+    var _ = ie, Y = /* @__PURE__ */ Symbol.for("react.transitional.element"), J = /* @__PURE__ */ Symbol.for("react.portal"), w = /* @__PURE__ */ Symbol.for("react.fragment"), x = /* @__PURE__ */ Symbol.for("react.strict_mode"), v = /* @__PURE__ */ Symbol.for("react.profiler"), j = /* @__PURE__ */ Symbol.for("react.consumer"), S = /* @__PURE__ */ Symbol.for("react.context"), A = /* @__PURE__ */ Symbol.for("react.forward_ref"), H = /* @__PURE__ */ Symbol.for("react.suspense"), p = /* @__PURE__ */ Symbol.for("react.suspense_list"), R = /* @__PURE__ */ Symbol.for("react.memo"), O = /* @__PURE__ */ Symbol.for("react.lazy"), Z = /* @__PURE__ */ Symbol.for("react.activity"), Q = /* @__PURE__ */ Symbol.for("react.client.reference"), P = _.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, U = Object.prototype.hasOwnProperty, ee = Array.isArray, E = console.createTask ? console.createTask : function() {
       return null;
     };
     _ = {
@@ -230,7 +230,7 @@ React keys must be passed directly to JSX without using spread:
     var q, z = {}, G = _.react_stack_bottom_frame.bind(
       _,
       u
-    )(), C = b(y(u)), X = {};
+    )(), C = E(y(u)), X = {};
     L.Fragment = w, L.jsx = function(e, a, o) {
       var l = 1e4 > P.recentlyCreatedOwnerStacks++;
       return N(
@@ -239,7 +239,7 @@ React keys must be passed directly to JSX without using spread:
         o,
         !1,
         l ? Error("react-stack-top-frame") : G,
-        l ? b(y(e)) : C
+        l ? E(y(e)) : C
       );
     }, L.jsxs = function(e, a, o) {
       var l = 1e4 > P.recentlyCreatedOwnerStacks++;
@@ -249,7 +249,7 @@ React keys must be passed directly to JSX without using spread:
         o,
         !0,
         l ? Error("react-stack-top-frame") : G,
-        l ? b(y(e)) : C
+        l ? E(y(e)) : C
       );
     };
   })()), L;
@@ -270,7 +270,7 @@ const se = {
 function ye({
   value: i = "",
   onChange: d,
-  placeholder: D = "Select a date",
+  placeholder: b = "Select a date",
   id: y,
   name: f,
   label: u,
@@ -281,7 +281,7 @@ function ye({
   required: N = !1,
   className: W = ""
 }) {
-  const v = se[B] || se["YYYY-MM-DD"], _ = (t, r) => {
+  const D = se[B] || se["YYYY-MM-DD"], _ = (t, r) => {
     if (!t) return null;
     const n = t.match(r.pattern);
     if (!n) return null;
@@ -291,14 +291,14 @@ function ye({
     });
     const h = new Date(c.year, c.month - 1, c.day);
     return h.getFullYear() !== c.year || h.getMonth() !== c.month - 1 || h.getDate() !== c.day ? null : h;
-  }, Y = (t) => _(t, v), J = (t) => {
-    const r = t.getFullYear(), n = String(t.getMonth() + 1).padStart(2, "0"), c = String(t.getDate()).padStart(2, "0"), h = v, F = { year: r, month: n, day: c };
+  }, Y = (t) => _(t, D), J = (t) => {
+    const r = t.getFullYear(), n = String(t.getMonth() + 1).padStart(2, "0"), c = String(t.getDate()).padStart(2, "0"), h = D, F = { year: r, month: n, day: c };
     return h.order.map(($) => F[$]).join(h.separator);
   }, w = (t) => {
     if (!t) return "";
-    const r = _(t, v);
+    const r = _(t, D);
     return r && !isNaN(r.getTime()) ? t : J(/* @__PURE__ */ new Date());
-  }, [x, E] = te(!1), [j, S] = te(() => w(i)), A = ue(null), H = () => {
+  }, [x, v] = te(!1), [j, S] = te(() => w(i)), A = ue(null), H = () => {
     const t = w(i);
     if (t) {
       const n = Y(t);
@@ -326,7 +326,7 @@ function ye({
     S(t), i && t !== i && d && d(t);
   }, [i]), re(() => {
     const t = (r) => {
-      A.current && !A.current.contains(r.target) && E(!1);
+      A.current && !A.current.contains(r.target) && v(!1);
     };
     return document.addEventListener("mousedown", t), () => document.removeEventListener("mousedown", t);
   }, []);
@@ -360,35 +360,32 @@ function ye({
   }, ee = (t) => {
     const r = parseInt(t.target.value, 10);
     R(new Date(r, p.getMonth(), 1));
-  }, b = (t) => !(!t || g && t < g || k && t > k), q = (t) => {
+  }, E = (t) => !(!t || g && t < g || k && t > k), q = (t) => {
     if (!t || !j) return !1;
     const r = Y(j);
     return r ? t.toDateString() === r.toDateString() : !1;
   }, z = P(), G = (t) => t ? t.toDateString() === (/* @__PURE__ */ new Date()).toDateString() : !1, C = (t) => {
-    if (!t || !b(t)) return;
+    if (!t || !E(t)) return;
     const r = J(t);
-    S(r), E(!1), d && d(r);
+    S(r), v(!1), d && d(r);
   }, X = () => {
     R(new Date(p.getFullYear(), p.getMonth() - 1, 1));
   }, e = () => {
     R(new Date(p.getFullYear(), p.getMonth() + 1, 1));
   }, a = (t) => {
-    const r = v.separator, n = new RegExp(`[^0-9${r === "/" ? "\\/" : r}]`, "g");
+    const r = D.separator, n = new RegExp(`[^0-9${r === "/" ? "\\/" : r}]`, "g");
     return t.replace(n, "");
   }, o = (t) => {
     const r = a(t.target.value);
     S(r);
     const n = Y(r);
-    n && b(n) && (R(new Date(n.getFullYear(), n.getMonth(), 1)), d && d(r));
+    n && E(n) && (R(new Date(n.getFullYear(), n.getMonth(), 1)), d && d(r));
   }, l = (t) => {
     if (["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(t.key)) {
-      t.key === "Escape" ? E(!1) : t.key === "Enter" && !x && E(!0);
+      t.key === "Escape" ? v(!1) : t.key === "Enter" && !x && v(!0);
       return;
     }
-    if (t.ctrlKey || t.metaKey)
-      return;
-    const n = v.separator;
-    t.key !== n && (/^\d$/.test(t.key) || t.preventDefault());
+    t.ctrlKey || t.metaKey || t.key === "/" || t.key === "-" || t.key === "Divide" || /^\d$/.test(t.key) || t.preventDefault();
   }, M = Q(p);
   return /* @__PURE__ */ s.jsxs(
     "div",
@@ -409,9 +406,9 @@ function ye({
               name: f,
               value: j,
               onChange: o,
-              onFocus: () => !T && E(!0),
+              onFocus: () => !T && v(!0),
               onKeyDown: l,
-              placeholder: D,
+              placeholder: b,
               disabled: T,
               required: N,
               className: "datepicker-input",
@@ -425,7 +422,7 @@ function ye({
             {
               type: "button",
               className: "datepicker-toggle",
-              onClick: () => !T && E(!x),
+              onClick: () => !T && v(!x),
               disabled: T,
               "aria-label": "Toggle calendar",
               children: "📅"
@@ -482,9 +479,9 @@ function ye({
             "button",
             {
               type: "button",
-              className: `datepicker-day ${t.isCurrentMonth ? "" : "datepicker-day-other-month"} ${q(t.date) ? "datepicker-day-selected" : ""} ${G(t.date) ? "datepicker-day-today" : ""} ${b(t.date) ? "" : "datepicker-day-disabled"}`,
+              className: `datepicker-day ${t.isCurrentMonth ? "" : "datepicker-day-other-month"} ${q(t.date) ? "datepicker-day-selected" : ""} ${G(t.date) ? "datepicker-day-today" : ""} ${E(t.date) ? "" : "datepicker-day-disabled"}`,
               onClick: () => C(t.date),
-              disabled: !b(t.date),
+              disabled: !E(t.date),
               "aria-label": t.date.toDateString(),
               children: t.date.getDate()
             },
