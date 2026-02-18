@@ -377,8 +377,13 @@ function DatePicker({
   const filterInputValue = (value) => {
     const separator = formatConfig.separator
     // Only allow digits and the separator character
-    const allowedChars = new RegExp(`[^0-9${separator === '/' ? '\\/' : separator}]`, 'g')
-    return value.replace(allowedChars, '')
+    let result = ''
+    for (const char of value) {
+      if (/\d/.test(char) || char === separator) {
+        result += char
+      }
+    }
+    return result
   }
 
   /**
