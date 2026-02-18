@@ -2,6 +2,18 @@ import { useState, useRef, useEffect } from 'react'
 import './DatePicker.css'
 
 /**
+ * Supported date formats and their configurations
+ */
+const DATE_FORMATS = {
+  'YYYY-MM-DD': { separator: '-', order: ['year', 'month', 'day'], pattern: /^(\d{4})-(\d{2})-(\d{2})$/ },
+  'YYYY/MM/DD': { separator: '/', order: ['year', 'month', 'day'], pattern: /^(\d{4})\/(\d{2})\/(\d{2})$/ },
+  'DD-MM-YYYY': { separator: '-', order: ['day', 'month', 'year'], pattern: /^(\d{2})-(\d{2})-(\d{4})$/ },
+  'DD/MM/YYYY': { separator: '/', order: ['day', 'month', 'year'], pattern: /^(\d{2})\/(\d{2})\/(\d{4})$/ },
+  'MM-DD-YYYY': { separator: '-', order: ['month', 'day', 'year'], pattern: /^(\d{2})-(\d{2})-(\d{4})$/ },
+  'MM/DD/YYYY': { separator: '/', order: ['month', 'day', 'year'], pattern: /^(\d{2})\/(\d{2})\/(\d{4})$/ },
+}
+
+/**
  * DatePicker Component
  *
  * A lightweight, accessible React date picker component converted from jQuery DateTimePicker.
@@ -14,11 +26,13 @@ import './DatePicker.css'
  * - Min/max date validation
  * - Click-outside-to-close behavior
  * - Today and Clear buttons
- * - Responsive calendar grid
+ * - Responsive calendar grid (5 rows)
+ * - Multiple date format support (YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, etc.)
+ * - Input restricted to numeric characters and separators only
  *
  * @component
  * @param {Object} props - Component properties
- * @param {string} props.value - The selected date value in YYYY-MM-DD format
+ * @param {string} props.value - The selected date value in the specified format
  * @param {function} props.onChange - Callback function called with formatted date string when date changes
  * @param {string} [props.placeholder='Select a date'] - Placeholder text for input field
  * @param {string} [props.id] - HTML id attribute for the input element
@@ -27,6 +41,7 @@ import './DatePicker.css'
  * @param {Date} [props.minDate] - Minimum selectable date (dates before this will be disabled)
  * @param {Date} [props.maxDate] - Maximum selectable date (dates after this will be disabled)
  * @param {string} [props.format='YYYY-MM-DD'] - Date format for display and parsing
+ *   Supported formats: YYYY-MM-DD, YYYY/MM/DD, DD-MM-YYYY, DD/MM/YYYY, MM-DD-YYYY, MM/DD/YYYY
  * @param {boolean} [props.disabled=false] - Whether the input is disabled
  * @param {boolean} [props.required=false] - Whether the input is required for form validation
  * @param {string} [props.className=''] - Additional CSS class names for styling
@@ -37,6 +52,14 @@ import './DatePicker.css'
  *   value={date}
  *   onChange={setDate}
  *   placeholder="Select a date"
+ * />
+ *
+ * @example
+ * // With European format (DD/MM/YYYY)
+ * <DatePicker
+ *   value="15/01/2024"
+ *   onChange={setDate}
+ *   format="DD/MM/YYYY"
  * />
  *
  * @example
@@ -65,20 +88,94 @@ function DatePicker({
   required = false,
   className = ''
 }) {
+  // Get format configuration (fallback to YYYY-MM-DD if invalid format)
+  const formatConfig = DATE_FORMATS[format] || DATE_FORMATS['YYYY-MM-DD']
+
+  /**
+   * Parses a date string according to the specified format
+   * @param {string} dateString - The date string to parse
+   * @param {Object} config - The format configuration to use
+   * @returns {Date|null} Parsed Date object or null if invalid
+   */
+  const parseDateWithConfig = (dateString, config) => {
+    if (!dateString) return null
+    
+    const match = dateString.match(config.pattern)
+    
+    if (!match) return null
+    
+    const parts = {}
+    config.order.forEach((part, index) => {
+      parts[part] = parseInt(match[index + 1], 10)
+    })
+    
+    const date = new Date(parts.year, parts.month - 1, parts.day)
+    
+    // Validate the date is real (e.g., not Feb 30)
+    if (date.getFullYear() !== parts.year ||
+        date.getMonth() !== parts.month - 1 ||
+        date.getDate() !== parts.day) {
+      return null
+    }
+    
+    return date
+  }
+
+  /**
+   * Parses a date string according to the current format
+   * @param {string} dateString - The date string to parse
+   * @returns {Date|null} Parsed Date object or null if invalid
+   */
+  const parseDateFromFormat = (dateString) => {
+    return parseDateWithConfig(dateString, formatConfig)
+  }
+
+  /**
+   * Formats a Date object according to the specified format
+   * @param {Date} date - The date to format
+   * @returns {string} Formatted date string
+   */
+  const formatDateToString = (date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    
+    const config = formatConfig
+    const parts = { year, month, day }
+    
+    return config.order.map(part => parts[part]).join(config.separator)
+  }
+
+  /**
+   * Validates and normalizes the initial value
+   * If value doesn't match the expected format, returns today's date in the correct format
+   * @param {string} val - The value to validate
+   * @returns {string} Valid date string in the expected format
+   */
+  const getValidatedValue = (val) => {
+    if (!val) return ''
+    
+    const parsed = parseDateWithConfig(val, formatConfig)
+    if (parsed && !isNaN(parsed.getTime())) {
+      return val // Value is valid, return as-is
+    }
+    
+    // Value doesn't match expected format, return today's date
+    return formatDateToString(new Date())
+  }
+  
   // Component State Management
   const [isOpen, setIsOpen] = useState(false)  // Controls calendar visibility
-  const [inputValue, setInputValue] = useState(value)  // Current input field value
+  const [inputValue, setInputValue] = useState(() => getValidatedValue(value))  // Current input field value (validated)
   const containerRef = useRef(null)  // Reference to container for click-outside detection
 
-  // Initialize currentMonth based on value prop or current date
+  // Initialize currentMonth based on validated value or current date
   const getInitialMonth = () => {
-    if (value) {
-      const parts = value.split('-')
-      if (parts.length === 3) {
-        const date = new Date(parts[0], parts[1] - 1, parts[2])
-        if (!isNaN(date.getTime())) {
-          return new Date(date.getFullYear(), date.getMonth(), 1)
-        }
+    const validatedValue = getValidatedValue(value)
+    if (validatedValue) {
+      const date = parseDateFromFormat(validatedValue)
+      if (date && !isNaN(date.getTime())) {
+        return new Date(date.getFullYear(), date.getMonth(), 1)
       }
     }
     const today = new Date()
@@ -99,8 +196,15 @@ function DatePicker({
 
   // Effect: Synchronize internal state with external value prop
   // This ensures the component stays controlled and updates when parent changes value
+  // If the value doesn't match the expected format, it defaults to today's date
   useEffect(() => {
-    setInputValue(value)
+    const validatedValue = getValidatedValue(value)
+    setInputValue(validatedValue)
+    
+    // Notify parent if value was corrected to today's date
+    if (value && validatedValue !== value && onChange) {
+      onChange(validatedValue)
+    }
   }, [value])
 
   // Effect: Handle click-outside-to-close behavior
@@ -116,35 +220,10 @@ function DatePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  /**
-   * Formats a Date object to YYYY-MM-DD string
-   * @param {Date} date - The date to format
-   * @returns {string} Formatted date string (e.g., "2024-01-15")
-   */
-  const formatDate = (date) => {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
-  }
-
-  /**
-   * Parses a date string in YYYY-MM-DD format to a Date object
-   * @param {string} dateString - The date string to parse
-   * @returns {Date|null} Parsed Date object or null if invalid
-   */
-  const parseDate = (dateString) => {
-    if (!dateString) return null
-    const parts = dateString.split('-')
-    if (parts.length === 3) {
-      return new Date(parts[0], parts[1] - 1, parts[2])
-    }
-    return null
-  }
 
   /**
    * Generates an array of days for the calendar grid
-   * Includes days from previous/next months for a complete 6-week grid
+   * Includes days from previous/next months for a complete 5-week grid (35 days)
    * @param {Date} date - The month to generate days for
    * @returns {Array<{date: Date, isCurrentMonth: boolean}>} Array of day objects
    */
@@ -176,8 +255,8 @@ function DatePicker({
       })
     }
     
-    // Add days from next month to complete the grid (6 rows = 42 cells)
-    const remainingDays = 42 - days.length
+    // Add days from next month to complete the grid (5 rows = 35 cells)
+    const remainingDays = 35 - days.length
     for (let i = 1; i <= remainingDays; i++) {
       days.push({
         date: new Date(year, month + 1, i),
@@ -238,7 +317,7 @@ function DatePicker({
    */
   const isSelected = (date) => {
     if (!date || !inputValue) return false
-    const selected = parseDate(inputValue)
+    const selected = parseDateFromFormat(inputValue)
     if (!selected) return false
     return date.toDateString() === selected.toDateString()
   }
@@ -264,7 +343,7 @@ function DatePicker({
   const handleDateSelect = (date) => {
     if (!date || !isDateInRange(date)) return
     
-    const formattedDate = formatDate(date)
+    const formattedDate = formatDateToString(date)
     setInputValue(formattedDate)
     setIsOpen(false)
     
@@ -291,35 +370,68 @@ function DatePicker({
   }
 
   /**
+   * Filters input to only allow numeric characters and the format separator
+   * @param {string} value - The input value to filter
+   * @returns {string} Filtered value with only allowed characters
+   */
+  const filterInputValue = (value) => {
+    const separator = formatConfig.separator
+    // Only allow digits and the separator character
+    const allowedChars = new RegExp(`[^0-9${separator === '/' ? '\\/' : separator}]`, 'g')
+    return value.replace(allowedChars, '')
+  }
+
+  /**
    * Handles manual input changes
+   * Filters to allow only numeric characters and separators
    * Validates and parses the input, updates calendar view if valid
    * @param {Event} e - The input change event
    */
   const handleInputChange = (e) => {
-    const newValue = e.target.value
-    setInputValue(newValue)
+    const filteredValue = filterInputValue(e.target.value)
+    setInputValue(filteredValue)
     
     // Attempt to parse and validate the manually entered date
-    const parsed = parseDate(newValue)
+    const parsed = parseDateFromFormat(filteredValue)
     if (parsed && isDateInRange(parsed)) {
-      setCurrentMonth(parsed)  // Update calendar to show the entered month
+      setCurrentMonth(new Date(parsed.getFullYear(), parsed.getMonth(), 1))  // Update calendar to show the entered month
       if (onChange) {
-        onChange(newValue)
+        onChange(filteredValue)
       }
     }
   }
 
   /**
-   * Handles keyboard navigation
-   * Escape: Close calendar
-   * Enter: Open calendar (when closed)
+   * Handles keydown events on input to prevent non-numeric characters
    * @param {KeyboardEvent} e - The keyboard event
    */
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false)
-    } else if (e.key === 'Enter' && !isOpen) {
-      setIsOpen(true)
+  const handleInputKeyDown = (e) => {
+    // Allow navigation keys
+    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']
+    if (allowedKeys.includes(e.key)) {
+      // Handle calendar open/close on Escape/Enter
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+      } else if (e.key === 'Enter' && !isOpen) {
+        setIsOpen(true)
+      }
+      return
+    }
+    
+    // Allow Ctrl/Cmd combinations (copy, paste, select all)
+    if (e.ctrlKey || e.metaKey) {
+      return
+    }
+    
+    // Allow separator character
+    const separator = formatConfig.separator
+    if (e.key === separator) {
+      return
+    }
+    
+    // Only allow digits
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault()
     }
   }
 
@@ -346,7 +458,7 @@ function DatePicker({
           value={inputValue}
           onChange={handleInputChange}
           onFocus={() => !disabled && setIsOpen(true)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleInputKeyDown}
           placeholder={placeholder}
           disabled={disabled}
           required={required}
