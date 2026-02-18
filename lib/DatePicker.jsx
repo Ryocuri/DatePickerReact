@@ -377,13 +377,8 @@ function DatePicker({
   const filterInputValue = (value) => {
     const separator = formatConfig.separator
     // Only allow digits and the separator character
-    let result = ''
-    for (const char of value) {
-      if (/\d/.test(char) || char === separator) {
-        result += char
-      }
-    }
-    return result
+    const allowedChars = new RegExp(`[^0-9${separator === '/' ? '\\/' : separator}]`, 'g')
+    return value.replace(allowedChars, '')
   }
 
   /**
@@ -428,13 +423,13 @@ function DatePicker({
       return
     }
     
-    // Allow separator characters (both / and - to support all formats)
-    // Also check for Divide key (numpad /)
-    if (e.key === '/' || e.key === '-' || e.key === 'Divide') {
+    // Allow separator character
+    const separator = formatConfig.separator
+    if (e.key === separator) {
       return
     }
     
-    // Only allow digits (including numpad digits)
+    // Only allow digits
     if (!/^\d$/.test(e.key)) {
       e.preventDefault()
     }
