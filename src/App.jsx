@@ -5,6 +5,8 @@ import './App.css'
 
 function App() {
   const [basicDate, setBasicDate] = useState('')
+  const [europeanDate, setEuropeanDate] = useState('')
+  const [usDate, setUsDate] = useState('')
   const [birthDate, setBirthDate] = useState('')
   const [constrainedDate, setConstrainedDate] = useState('')
 
@@ -14,13 +16,38 @@ function App() {
       <p>Demo and testing page for the DatePicker component</p>
 
       <div className="demo-section">
-        <h2>Basic Usage</h2>
+        <h2>Basic Usage (YYYY-MM-DD)</h2>
+        <p className="demo-hint">Default format - use hyphen (-) as separator</p>
         <DatePicker
           value={basicDate}
           onChange={setBasicDate}
-          placeholder="Select a date"
+          placeholder="YYYY-MM-DD"
         />
         <p className="demo-value">Selected: {basicDate || 'None'}</p>
+      </div>
+
+      <div className="demo-section">
+        <h2>European Format (DD/MM/YYYY)</h2>
+        <p className="demo-hint">Use forward slash (/) as separator</p>
+        <DatePicker
+          value={europeanDate}
+          onChange={setEuropeanDate}
+          format="DD/MM/YYYY"
+          placeholder="DD/MM/YYYY"
+        />
+        <p className="demo-value">Selected: {europeanDate || 'None'}</p>
+      </div>
+
+      <div className="demo-section">
+        <h2>US Format (MM/DD/YYYY)</h2>
+        <p className="demo-hint">Use forward slash (/) as separator</p>
+        <DatePicker
+          value={usDate}
+          onChange={setUsDate}
+          format="MM/DD/YYYY"
+          placeholder="MM/DD/YYYY"
+        />
+        <p className="demo-value">Selected: {usDate || 'None'}</p>
       </div>
 
       <div className="demo-section">

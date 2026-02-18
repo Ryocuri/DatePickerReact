@@ -370,20 +370,29 @@ function DatePicker({
   }
 
   /**
-   * Filters input to only allow numeric characters and the format separator
+   * Filters input to only allow numeric characters and date separators (- and /)
    * @param {string} value - The input value to filter
    * @returns {string} Filtered value with only allowed characters
    */
   const filterInputValue = (inputVal) => {
-    const separator = formatConfig.separator
-    // Only allow digits and the separator character - using character-by-character filtering
-    // to avoid regex escaping issues with forward slash
-    return inputVal.split('').filter(char => /\d/.test(char) || char === separator).join('')
+    // Allow digits and both common date separators (- and /) for flexible manual input
+    return inputVal.split('').filter(char => /\d/.test(char) || char === '-' || char === '/').join('')
+  }
+
+  /**
+   * Normalizes a date string by replacing any separator with the expected format separator
+   * @param {string} dateString - The date string to normalize
+   * @returns {string} Normalized date string with correct separator
+   */
+  const normalizeDateString = (dateString) => {
+    const expectedSeparator = formatConfig.separator
+    // Replace both common separators with the expected one
+    return dateString.replace(/[-/]/g, expectedSeparator)
   }
 
   /**
    * Handles manual input changes
-   * Filters to allow only numeric characters and separators
+   * Filters to allow only numeric characters and separators (- and /)
    * Validates and parses the input, updates calendar view if valid
    * @param {Event} e - The input change event
    */
@@ -391,18 +400,23 @@ function DatePicker({
     const filteredValue = filterInputValue(e.target.value)
     setInputValue(filteredValue)
     
+    // Normalize the separators to the expected format for parsing
+    const normalizedValue = normalizeDateString(filteredValue)
+    
     // Attempt to parse and validate the manually entered date
-    const parsed = parseDateFromFormat(filteredValue)
+    const parsed = parseDateFromFormat(normalizedValue)
     if (parsed && isDateInRange(parsed)) {
       setCurrentMonth(new Date(parsed.getFullYear(), parsed.getMonth(), 1))  // Update calendar to show the entered month
       if (onChange) {
-        onChange(filteredValue)
+        // Send the normalized value to the parent (with correct separator for the format)
+        onChange(normalizedValue)
       }
     }
   }
 
   /**
    * Handles keydown events on input to prevent non-numeric characters
+   * Allows both - and / as date separators for flexible manual input
    * @param {KeyboardEvent} e - The keyboard event
    */
   const handleInputKeyDown = (e) => {
@@ -423,9 +437,8 @@ function DatePicker({
       return
     }
     
-    // Allow separator character
-    const separator = formatConfig.separator
-    if (e.key === separator) {
+    // Allow both common date separators (- and /) for flexible manual input
+    if (e.key === '-' || e.key === '/') {
       return
     }
     
