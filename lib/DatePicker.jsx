@@ -374,11 +374,11 @@ function DatePicker({
    * @param {string} value - The input value to filter
    * @returns {string} Filtered value with only allowed characters
    */
-  const filterInputValue = (value) => {
+  const filterInputValue = (inputVal) => {
     const separator = formatConfig.separator
-    // Only allow digits and the separator character
-    const allowedChars = new RegExp(`[^0-9${separator === '/' ? '\\/' : separator}]`, 'g')
-    return value.replace(allowedChars, '')
+    // Only allow digits and the separator character - using character-by-character filtering
+    // to avoid regex escaping issues with forward slash
+    return inputVal.split('').filter(char => /\d/.test(char) || char === separator).join('')
   }
 
   /**
